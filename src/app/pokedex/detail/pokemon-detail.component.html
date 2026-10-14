@@ -1,0 +1,66 @@
+@if (loading()) {
+  <div class="loading-spinner">
+    <div class="pokeball"></div>
+    <p>Cargando detalles del Pokémon...</p>
+  </div>
+} @else if (error(); as errorMsg) {
+  <div class="error-box">
+    <p>{{ errorMsg }}</p>
+    <button (click)="goBack()" class="btn-back">← Volver a la Pokédex</button>
+  </div>
+} @else if (pokemon(); as p) {
+  <div class="detail-card">
+    <header class="detail-header">
+      <div class="title-block">
+        <span class="detail-number">#{{ p.id }}</span>
+        <h2>{{ p.name }}</h2>
+      </div>
+      <div class="types-summary">
+        @for (type of p.types || []; track type.type.name) {
+          <span class="type-badge-large type-{{ type.type.name }}">{{ type.type.name }}</span>
+        }
+      </div>
+    </header>
+
+    <main class="detail-content">
+      <section class="image-section">
+        @if (p.sprites?.front_default) {
+          <img [src]="p.sprites.front_default" [alt]="p.name" class="pokemon-large-image" />
+        } @else {
+          <div class="image-fallback">?</div>
+        }
+      </section>
+
+      <section class="stats-section">
+        <div class="stat-block">
+          <h3>Características</h3>
+          <p>
+            <span>Altura</span><strong>{{ (p.height || 0) / 10 }} m</strong>
+          </p>
+          <p>
+            <span>Peso</span><strong>{{ (p.weight || 0) / 10 }} kg</strong>
+          </p>
+          <p>
+            <span>Exp. base</span><strong>{{ p.base_experience || '—' }}</strong>
+          </p>
+        </div>
+
+        @if (p.stats?.length) {
+          <div class="stat-block">
+            <h3>Estadísticas base</h3>
+            @for (stat of p.stats; track stat.stat.name) {
+              <p>
+                <span>{{ stat.stat.name }}</span>
+                <strong>{{ stat.base_stat }}</strong>
+              </p>
+            }
+          </div>
+        }
+      </section>
+    </main>
+
+    <footer class="detail-footer">
+      <button (click)="goBack()" class="btn-back">← Volver a la Pokédex</button>
+    </footer>
+  </div>
+}

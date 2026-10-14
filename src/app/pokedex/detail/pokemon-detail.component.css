@@ -1,0 +1,267 @@
+/* ---------- Carga / error ---------- */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  color: #6b7280;
+}
+
+.pokeball {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(#ef4444 0 50%, #f9fafb 50% 100%);
+  border: 3px solid #1f2937;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-box {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #b91c1c;
+}
+
+.error-box .btn-back {
+  margin-top: 1rem;
+}
+
+/* ---------- Tarjeta de detalle ---------- */
+.detail-card {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 1.75rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.title-block {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.detail-number {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #9ca3af;
+}
+
+.title-block h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f2937;
+  text-transform: capitalize;
+}
+
+.types-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.type-badge-large {
+  display: inline-block;
+  font-size: 0.8rem;
+  line-height: 1;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* ---------- Contenido ---------- */
+.detail-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.image-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 1rem;
+  min-height: 260px;
+}
+
+.pokemon-large-image {
+  width: 100%;
+  max-width: 320px;
+  image-rendering: pixelated;
+}
+
+.image-fallback {
+  font-size: 4rem;
+  font-weight: 700;
+  color: #d1d5db;
+}
+
+.stats-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stat-block {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.stat-block h3 {
+  margin: 0 0 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+}
+
+.stat-block p {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.35rem 0;
+  font-size: 0.92rem;
+  color: #4b5563;
+  text-transform: capitalize;
+}
+
+.stat-block strong {
+  color: #1f2937;
+}
+
+/* ---------- Pie ---------- */
+.detail-footer {
+  margin-top: 1.75rem;
+  text-align: center;
+}
+
+.btn-back {
+  padding: 0.6rem 1.3rem;
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.1s;
+}
+
+.btn-back:hover {
+  background: #357abd;
+  transform: translateY(-1px);
+}
+
+/* ---------- Insignias de tipo (necesarias: encapsulación de vistas) ---------- */
+.type-normal {
+  color: #fff;
+  background: #a8a77a;
+}
+.type-fire {
+  color: #fff;
+  background: #f08030;
+}
+.type-water {
+  color: #fff;
+  background: #6390f0;
+}
+.type-grass {
+  color: #fff;
+  background: #78c850;
+}
+.type-electric {
+  color: #1f2937;
+  background: #f7d02c;
+}
+.type-poison {
+  color: #fff;
+  background: #a040a0;
+}
+.type-ground {
+  color: #1f2937;
+  background: #e2bf65;
+}
+.type-flying {
+  color: #fff;
+  background: #a890f0;
+}
+.type-psychic {
+  color: #fff;
+  background: #f95587;
+}
+.type-bug {
+  color: #1f2937;
+  background: #a6b91a;
+}
+.type-rock {
+  color: #1f2937;
+  background: #b8a038;
+}
+.type-ghost {
+  color: #fff;
+  background: #705898;
+}
+.type-ice {
+  color: #1f2937;
+  background: #96d9d6;
+}
+.type-dragon {
+  color: #fff;
+  background: #7038f8;
+}
+.type-dark {
+  color: #fff;
+  background: #705848;
+}
+.type-steel {
+  color: #fff;
+  background: #b7b7ce;
+}
+.type-fairy {
+  color: #1f2937;
+  background: #d685ad;
+}
+.type-fighting {
+  color: #fff;
+  background: #c22e28;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 700px) {
+  .detail-content {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,60 @@
+<div class="pokedex-header">
+  <h1>Pokédex Angular</h1>
+  <div class="controls">
+    <input
+      type="text"
+      placeholder="Buscar Pokémon..."
+      [value]="searchTerm()"
+      (input)="onSearchInput($event)"
+      class="search-input"
+    />
+    <select [value]="selectedType()" (change)="onTypeSelect($event)" class="type-select">
+      @for (t of types; track t) {
+        <option [value]="t">{{ t === 'all' ? 'Todos los tipos' : t }}</option>
+      }
+    </select>
+  </div>
+</div>
+
+@if (isLoading()) {
+  <div class="loading-spinner">
+    <div class="pokeball"></div>
+    <p>Cargando Pokémon...</p>
+  </div>
+} @else if (error(); as errorMsg) {
+  <p class="no-results">{{ errorMsg }}</p>
+} @else if (filteredPokemons().length === 0) {
+  <p class="no-results">
+    No se encontraron Pokémon con esos filtros.
+    <button type="button" class="btn-clear" (click)="clearSearch(); selectedType.set('all')">
+      Limpiar filtros
+    </button>
+  </p>
+} @else {
+  <p class="results-count">{{ filteredPokemons().length }} Pokémon</p>
+  <section class="pokemon-cards">
+    @for (pokemon of filteredPokemons(); track pokemon.id) {
+      <article class="pokemon-card" (click)="viewDetail(pokemon)">
+        <span class="card-number">#{{ pokemon.id }}</span>
+        <h4 class="card-name">{{ pokemon.name }}</h4>
+
+        @if (pokemon.sprites?.front_default) {
+          <img
+            [src]="pokemon.sprites.front_default"
+            [alt]="pokemon.name"
+            class="card-image"
+            loading="lazy"
+          />
+        } @else {
+          <div class="card-image-fallback">?</div>
+        }
+
+        <div class="card-types">
+          @for (type of pokemon.types || []; track type.type.name) {
+            <span class="type-badge type-{{ type.type.name }}">{{ type.type.name }}</span>
+          }
+        </div>
+      </article>
+    }
+  </section>
+}
