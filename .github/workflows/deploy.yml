@@ -1,0 +1,61 @@
+name: Desplegar en GitHub Pages
+
+# Se despliega en cada push a `master` y también se puede lanzar a mano.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Permisos que exige actions/deploy-pages (publicación mediante OIDC).
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# No se cancelan despliegues en curso: GitHub Pages permite uno a la vez.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Formato y tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx prettier --check .
+      - run: npm test -- --watch=false
+
+  deploy:
+    name: Construir y publicar
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.build-publish.outputs.page_url }}
+    steps:
+      # El checkout y el Node se preparan ANTES de la acción: el build corre
+      # dentro de ella y @angular/cli exige ^22.22.3 || ^24.15.0 || >=26.
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Build y publicación (bitovi)
+        id: build-publish
+        uses: bitovi/github-actions-angular-to-github-pages@v1.0.0
+        with:
+          checkout: false # ya hay checkout propio (setup-node necesita los archivos para la caché)
+          caching: false # la caché de npm ya la gestiona setup-node
+          path: dist/app-01/browser # la ruta de salida la define el proyecto (app-01), no el nombre del repo
+          # GitHub Pages sirve la web en /<nombre-repo>/, así que hay que fijar
+          # el base-href. El 404.html copia el shell CSR: GitHub Pages lo sirve
+          # ante rutas desconocidas y el router de Angular redirige a /pokedex.
+          build_command: >-
+            npm run build -- --base-href=/${{ github.event.repository.name }}/ &&
+            cp dist/app-01/browser/index.csr.html dist/app-01/browser/404.html

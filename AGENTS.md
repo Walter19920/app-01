@@ -21,7 +21,7 @@ This file contains compact guidance for future OpenCode sessions. Each line answ
 - **SSR entrypoints**: `src/main.server.ts` (bootstraps SSR) and `src/server.ts` (Express + AngularNodeAppEngine).
 - **Build output**: `dist/browser/` for the client, `dist/app-01/server/` for SSR.
 - **SSR serves** from the `browser` folder via Express static serving (see `server.ts` line 30).
-- **Routes**: `src/app/app.routes.ts` → `/pokedex`, `/pokedex/detail` (query param `?id=`, never a path param — see Quirks). Server/prerender routes are in `src/app/app.routes.server.ts`.
+- **Routes**: `src/app/app.routes.ts` → `''` (renders the list), `/pokedex`, `/pokedex/detail` (query param `?id=`, never a path param — see Quirks), `**` → redirect. Server/prerender routes are in `src/app/app.routes.server.ts` (everything prerenders).
 
 ## Component conventions (enforced structure)
 
@@ -51,6 +51,17 @@ This repo currently does not have a dedicated lint script in `package.json`, but
 2. `ng test` runs unit tests
 
 If you add a lint script (e.g., `ng lint`), run it **before** `ng test` to catch formatting issues early.
+
+## Deployment (GitHub Pages)
+
+- **Workflow**: `.github/workflows/deploy.yml` — push to **`master`** (default branch is `master`, not `main`) or manual `workflow_dispatch`. Job `test` (prettier + `ng test -- --watch=false`) gates job `deploy` via `needs`.
+- **Action**: `bitovi/github-actions-angular-to-github-pages@v1.0.0`. It interpolates `install_command` + `build_command` into a **bash** step, so `&&` chaining in `build_command` is safe.
+- **Node 24 is pinned (`actions/setup-node`) BEFORE the action** — `@angular/cli` engines demand `^22.22.3 || ^24.15.0 || >=26`, which the runner's default Node does not meet. The workflow checks out first and passes `checkout: false` so `setup-node` can cache npm from `package-lock.json`.
+- **`path: dist/app-01/browser` is fixed to the project name** — the action's default path uses the _repo_ name, but Angular's output directory comes from `angular.json`.
+- **`build_command`** = `npm run build -- --base-href=/<repo-name>/ && cp …/index.csr.html …/404.html`. Pages serves under `/<repo>/`, and the `404.html` (CSR shell) lets the Angular router handle unknown URLs (Pages serves it with status 404; the `**` route redirects to `/pokedex`).
+- **One-time repo setup**: Settings → Pages → Source = **GitHub Actions**, otherwise `deploy-pages` fails.
+- **`path: ''` renders the list instead of `redirectTo`** — redirect routes are NOT prerendered, so `/` would ship without `index.html` and Pages would 404 the home URL.
+- **Pages 301s directory URLs**: `/pokedex/detail?id=25` → `/pokedex/detail/?id=25` (query **preserved** — verified with curl against a real Pages site). Angular Router matches trailing-slash URLs, so deep links survive; don't drop the `?id=`.
 
 ## Quirks & gotchas
 
